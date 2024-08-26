@@ -71,7 +71,7 @@ train_transform = Compose(
     [
         LoadImaged(keys=['image', 'label']),
         EnsureChannelFirstd(keys=['image', 'label']),
-        Spacingd(keys=['image', 'label'], pixdim=[1, 1, 2.3], mode=('bilinear', 'nearest')),
+        Spacingd(keys=['image', 'label'], pixdim=[1.2, 1.1, 1.6], mode=('bilinear', 'nearest')),
         Orientationd(keys=['image', 'label'], axcodes='RAS'),
         # NormalizeIntensityd(keys=['image'], nonzero=False),
         CropForegroundd(keys=['image', 'label'], source_key='image'),
@@ -87,7 +87,7 @@ train_transform = Compose(
         RandCropByPosNegLabeld(
             keys=['image','label'],
             label_key='label',
-            spatial_size=[224, 224, 40],
+            spatial_size=[200, 200, 40],
             pos=2,
             neg=1,
             num_samples=3,
@@ -110,7 +110,7 @@ val_transform = Compose(
     [
         LoadImaged(keys=['image', 'label']),
         EnsureChannelFirstd(keys=['image', 'label']),
-        Spacingd(keys=['image', 'label'], pixdim=[1, 1, 2.3], mode=('bilinear', 'nearest')),
+        Spacingd(keys=['image', 'label'], pixdim=[1.2, 1.1, 1.6], mode=('bilinear', 'nearest')),
         Orientationd(keys=['image', 'label'], axcodes='RAS'),
         CropForegroundd(keys=['image', 'label'], source_key='image'),
         ScaleIntensityRanged(
@@ -178,7 +178,7 @@ model = ModUNet(
     spatial_dims=3,
     in_channels=1,
     out_channels=3,
-    features=(16, 32, 64, 128),
+    features=(16, 32, 64, 128, 256),
     kernel_size=(3, 3),
     dilation=(1, 1),
     upsample='deconv',
@@ -203,7 +203,7 @@ def inference(input):
     def _compute(input):
         return sliding_window_inference(
             input,
-            roi_size=(224, 224, 40),
+            roi_size=(200, 200, 40),
             sw_batch_size=1,
             predictor=model,
             overlap=0.5,

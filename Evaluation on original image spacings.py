@@ -38,7 +38,7 @@ model = ModUNet(
     spatial_dims=3,
     in_channels=1,
     out_channels=3,
-    features=(16, 32, 64, 128),
+    features=(16, 32, 64, 128, 256),
     kernel_size=(3, 3),     # Two Convolution for each layer. e.g. kernel_size=(3, 5) 1. used for 3*3, 2. used for 5*5
     dilation=(1, 1),        # # Two Convolution for each layer. e.g. dilation=(1, 2) 1. used for 1 and 2. used for 2
     upsample='deconv',
@@ -50,7 +50,7 @@ def inference(input):
     def _compute(input):
         return sliding_window_inference(
             input,
-            roi_size=(224, 224, 40),
+            roi_size=(200, 200, 40),
             sw_batch_size=2,
             predictor=model,
             overlap=0.5,
@@ -72,7 +72,7 @@ val_org_transforms = Compose(
     [
         LoadImaged(keys=['image', 'label']),
         EnsureChannelFirstd(keys=['image', 'label']),
-        Spacingd(keys=['image'], pixdim=[1, 1, 2.3], mode=('bilinear')),
+        Spacingd(keys=['image'], pixdim=[1.2, 1.1, 1.6], mode=('bilinear')),
         Orientationd(keys=['image'], axcodes='RAS'),
         CropForegroundd(keys=['image'], source_key='image'),
         ScaleIntensityRanged(
